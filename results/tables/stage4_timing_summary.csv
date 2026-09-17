@@ -1,0 +1,4 @@
+Model,avg_fit_s,min_fit_s,max_fit_s,predict_1008steps_s
+SARIMA,31.36,12.04,66.22,0.17
+LSTM,212.27,116.22,343.35,2.819
+XGBoost,0.21,0.11,0.27,0.008
