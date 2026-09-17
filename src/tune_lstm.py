@@ -1,8 +1,8 @@
 """
-Stage 4 - systematic LSTM hyperparameter tuning (deliberately small grid -
-see WORK_LOG.md for the timed sanity check that showed a single LSTM fit
-costs ~30x a single SARIMA fit on this CPU-only machine, motivating a
-lean, well-reasoned grid rather than an exhaustive one).
+Systematic LSTM hyperparameter tuning (deliberately small grid - an
+earlier single-run timing check showed a single LSTM fit costing several
+times a single SARIMA fit on this CPU-only machine, motivating a lean,
+well-reasoned grid rather than an exhaustive one).
 
 Grid: lookback in {72, 144} (half a day vs. a full day of context),
 units in {32, 64} (network size / compute cost per epoch) - 4

@@ -1,15 +1,15 @@
 """
-# Stage 1:full dataset build.
+Full dataset build - data handling and memory management.
 
 Streams all 62 daily raw files one at a time (never holding more than one
 day's data in memory), keeps only the 3 columns needed (square_id,
 time_interval, internet_traffic), collapses the country_code breakdown by
 summing it away, and combines the result into one compact Parquet file
-that every later stage (EDA, modeling) reads instead of the raw text.
+that every later step (EDA, modeling) reads instead of the raw text.
 
 Also tracks memory (RSS = Resident Set Size, i.e. how much real RAM the
 Python process is holding) and wall-clock time throughout, as evidence for
-the Stage 1 write-up.
+the memory-management write-up.
 
 Run: python src/build_dataset.py
 """
@@ -118,7 +118,7 @@ def main():
         for s in per_file_naive_mb_estimate
     ) / 1e3
 
-    print("\n Stage 1 pipeline summary")
+    print("\n Data pipeline summary")
     print(f"Files processed:              {len(files)}")
     print(f"Combined rows:                {len(full):,}")
     print(f"Distinct squares:             {full['square_id'].nunique():,}")

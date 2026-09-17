@@ -1,5 +1,5 @@
 """
-Stage 2, step 2 - Exploratory Analysis.
+Exploratory analysis, part 2.
 
 Internet traffic time series for the first two weeks (2013-11-01 to
 2013-11-14 inclusive, Milan local time) for the 5 areas the brief asks

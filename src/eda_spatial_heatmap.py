@@ -1,8 +1,7 @@
 """
-Stage 2 addition - spatial view of total Internet traffic across Milan's
-100x100 grid, to address the "spatial" half of the EDA rubric criterion
-(everything done so far treats space only as a ranked list of totals, not
-an actual map).
+Exploratory analysis, part 4 - spatial view of total Internet traffic across
+Milan's 100x100 grid (everything done so far treats space only as a ranked
+list of totals, not an actual map).
 
 IMPORTANT CAVEAT (kept honest rather than guessed): the Milan grid's
 square_id (1-10000) is derived here as row-major order - row = (id-1)//100,

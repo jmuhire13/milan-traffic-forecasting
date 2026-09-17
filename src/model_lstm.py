@@ -1,17 +1,18 @@
 """
-Stage 4 - LSTM model.
+LSTM model.
 
 Input representation: sliding windows of the last `lookback` scaled
 internet_traffic values predict the next single value - a direct,
 standard sequence-to-one-step setup. Uses the MinMax-SCALED series (fit
-on training data only, from Stage 4 step 1), unlike SARIMA which used
-original units - neural network training is sensitive to input scale, so
-this is a deliberate, model-specific choice, documented as such.
+on training data only, built by prepare_forecasting_data.py), unlike
+SARIMA which used original units - neural network training is sensitive
+to input scale, so this is a deliberate, model-specific choice,
+documented as such.
 
 `lookback=144` (one full day at 10-minute resolution) is not an arbitrary
-default - it's chosen directly from Stage 2's finding that daily
-periodicity is the single strongest, most consistent structure in this
-data (ACF ~0.88 at the 1-day lag), so giving the network a full day of
+default - it's chosen directly from the exploratory analysis's finding
+that daily periodicity is the single strongest, most consistent structure
+in this data (ACF ~0.88 at the 1-day lag), so giving the network a full day of
 context as input is the natural starting point.
 
 One-step-ahead evaluation, consistent with SARIMA's approach: predictions

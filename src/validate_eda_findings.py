@@ -28,7 +28,7 @@ def check(name, condition, detail=""):
 def main():
     # ---- 1. Full re-derivation of total_internet_traffic_by_square.csv ----
     print("Re-deriving per-square totals from scratch, for ALL 10,000 squares "
-          "(not just the top few) - this file has been relied on throughout Stage 2...")
+          "(not just the top few) - this file has been relied on throughout the exploratory analysis...")
     full = pd.read_parquet(PROCESSED, columns=["square_id", "internet_traffic"])
     recomputed_totals = (
         full.groupby("square_id", as_index=False)["internet_traffic"]

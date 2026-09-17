@@ -55,9 +55,9 @@ TABLES = ROOT / "results" / "tables"
 FIGS = ROOT / "results" / "figures"
 """)
 
-# ------------------------------------------------------------- Stage 1 --
+# --------------------------------------------------- Data Handling --
 md(r"""---
-## Stage 1 — Data Handling and Memory Management
+## Data Handling and Memory Management
 
 The raw dataset is ~20GB across 62 daily text files, on a machine with 17GB total RAM — naive
 loading is not just inefficient here, it is close to infeasible. The strategy (see
@@ -106,9 +106,9 @@ recomputation from the raw files, and — after correcting an initial UTC-vs-Mil
 the date range reads exactly `2013-11-01 00:00:00` to `2014-01-01 23:50:00`.
 """)
 
-# ------------------------------------------------------------- Stage 2 --
+# ---------------------------------------------- Exploratory Analysis --
 md(r"""---
-## Stage 2 — Exploratory Analysis
+## Exploratory Analysis
 
 ### Distribution of total traffic across all 10,000 areas
 """)
@@ -159,12 +159,12 @@ Nov 2, 1:50pm. An Augmented Dickey-Fuller test confirms the raw series is statis
 contradiction of it. 124 residual anomalies were flagged in total (|z-score| > 4).
 """)
 
-# ------------------------------------------------------------- Stage 3 --
+# ------------------------------------------------ Model Selection --
 md(r"""---
-## Stage 3 — Related Work and Model Selection
+## Related Work and Model Selection
 
-Three deliberately different models were selected, each justified by both the Stage 2 evidence
-above and dataset-relevant prior research (not a generic literature summary — sources verified to
+Three deliberately different models were selected, each justified by both the exploratory-analysis
+evidence above and dataset-relevant prior research (not a generic literature summary — sources verified to
 actually use this same Telecom Italia Milan dataset where possible):
 
 **1. SARIMA (classical statistical).** Directly exploits the daily/weekly seasonality and
@@ -183,13 +183,13 @@ prediction in 5G cellular networks,"* *Discover Applied Sciences*, 7(10) — als
 dataset, and specifically found XGBoost/AdaBoost the computationally efficient (if not top-accuracy)
 alternative among eight models compared.
 
-Each model's honest strengths *and* weaknesses (not just a sales pitch) are discussed in Stage 4's
+Each model's honest strengths *and* weaknesses (not just a sales pitch) are discussed in the
 comparative analysis below, where they're actually tested.
 """)
 
-# ------------------------------------------------------------- Stage 4 --
+# ---------------------------------------------- Forecasting Experiments --
 md(r"""---
-## Stage 4 — Forecasting Experiments
+## Forecasting Experiments
 
 All three models forecast one-step-ahead Internet traffic for squares **5161, 5059, 5259** (the
 verified top-3 by total traffic — see the brief's own internally-consistent reading of "the three
@@ -241,8 +241,8 @@ code(r"""for sq in [5161, 5059, 5259]:
 md(r"""**SARIMA wins on 2 of 3 squares (5161, 5059); XGBoost wins the third (5259); LSTM is
 competitive throughout but never wins outright** — a genuine, disclosed result, not the outcome
 the closest prior literature (LSTM winning on this exact dataset) would predict, and explained
-rather than just reported: SARIMA's Fourier terms hand-encode exactly the seasonality Stage 2
-already proved dominates this data; XGBoost's win on square 5259 traces directly to its feature
+rather than just reported: SARIMA's Fourier terms hand-encode exactly the seasonality the
+exploratory analysis already proved dominates this data; XGBoost's win on square 5259 traces directly to its feature
 importances (59-92% weight on the single most recent value, the highest of the three squares on
 5259) making it the fastest to react to sudden change; LSTM's tuning budget was necessarily ~4x
 smaller than SARIMA's given the measured cost difference above.
@@ -254,7 +254,7 @@ code(r"""display(Image(filename=str(FIGS / "forecast_all_models_all_areas_grid.p
 
 md(r"""### Failure analysis: square 5259's overnight anomaly, Dec 21-22
 
-Stage 2 already flagged this general period as anomalous (STL residual analysis). In the actual
+The exploratory analysis already flagged this general period as anomalous (STL residual analysis). In the actual
 forecasts: **SARIMA misses it almost entirely** (prediction stays flat ~300-450 while actual
 traffic climbs past 1,000); **LSTM tracks the rising edge more closely** once the spike is
 underway; **XGBoost tracks it most closely of all three** (at one point matching the actual value
@@ -288,7 +288,7 @@ Three architecturally distinct models — a classical statistical approach (SARI
 recurrent neural network (LSTM), and a tree-based ensemble (XGBoost) — were built, systematically
 tuned, and rigorously evaluated for one-step-ahead mobile Internet-traffic forecasting across three
 Milan grid areas with genuinely different traffic characteristics (identified and evidenced in
-Stage 2). No single model dominates across all areas: SARIMA's explicit seasonal structure wins
+the exploratory analysis). No single model dominates across all areas: SARIMA's explicit seasonal structure wins
 where traffic is highly periodic and regular, while XGBoost's sensitivity to the most recent
 observation wins where traffic includes real, irregular anomalies. This area-dependence is itself
 the headline finding, directly answering the project's research question, and is supported by

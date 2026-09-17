@@ -1,5 +1,5 @@
 """
-Stage 2, step 3 - two additional analyses on the busiest square (5161),
+Exploratory analysis, part 3 - two additional analyses on the busiest square (5161),
 using the full 2-month series (not just the first two weeks).
 
 (a) Autocorrelation (ACF) - quantifies how strongly traffic depends on its

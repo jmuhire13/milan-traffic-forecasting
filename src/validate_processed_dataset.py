@@ -1,5 +1,5 @@
 """
-Stage 1 review: sanity-check the processed Parquet output for integrity,
+Data pipeline review: sanity-check the processed Parquet output for integrity,
 and cross-check it against an independent re-computation for one day.
 
 Run: python src/validate_processed_dataset.py

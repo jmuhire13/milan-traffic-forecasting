@@ -1,12 +1,12 @@
 """
-Stage 4 - systematic SARIMA (ARIMA + Fourier) hyperparameter tuning.
+Systematic SARIMA (ARIMA + Fourier) hyperparameter tuning.
 
 Grid search over ARIMA(p, 0, q) orders - d fixed at 0, justified by the
-Stage 2 ADF test already confirming the series is stationary, so this
-degree of freedom doesn't need to be searched blindly. Fourier harmonics
-(4 daily, 2 weekly) are kept fixed at the values validated in the sanity
-check, for the same reason - Stage 2's ACF analysis already told us how
-much daily/weekly structure exists.
+exploratory analysis's ADF test already confirming the series is
+stationary, so this degree of freedom doesn't need to be searched
+blindly. Fourier harmonics (4 daily, 2 weekly) are kept fixed at the
+values validated in the sanity check, for the same reason - the ACF
+analysis already told us how much daily/weekly structure exists.
 
 IMPORTANT methodological point: tuning must NOT touch the Dec 16-22 test
 week at all, or model selection would be indirectly fit to the exact data

@@ -1,11 +1,11 @@
 """
-Stage 2, step 1 - Exploratory Analysis.
+Exploratory analysis, part 1.
 
 (a) Distribution of total Internet traffic across all 10,000 grid squares
     over the full 2-month period, as a figure + summary stats.
 (b) Identify the top-3 busiest squares, and independently verify that
     ranking against the full processed dataset (not just trusting the
-    Stage-1 summary file) - checking it reflects sustained traffic, not
+    per-square totals file) - checking it reflects sustained traffic, not
     a one-off outlier, and that the margin over 4th/5th place is real.
 
 Run: python src/eda_distribution.py
@@ -67,7 +67,7 @@ def main():
 
     # (b) Identify + verify top-3 
     top3 = totals.head(3)
-    print("\n=== Top 3 squares by total traffic (from Stage 1 summary file) ===")
+    print("\n=== Top 3 squares by total traffic (from the per-square totals file) ===")
     print(top3.to_string(index=False))
 
     top3_ids = top3["square_id"].tolist()

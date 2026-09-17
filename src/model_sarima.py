@@ -1,7 +1,8 @@
 """
-Stage 4 - SARIMA model (ARIMA with Fourier-term seasonal regressors,
-instead of a literal seasonal_order=144, for computational tractability -
-see WORK_LOG.md for the timed test that motivated this).
+SARIMA model (ARIMA with Fourier-term seasonal regressors, instead of a
+literal seasonal_order=144, for computational tractability - a literal
+seasonal_order=144 was timed and found to take 67.9s to fit on just 1,000
+points, which motivated this approach instead).
 
 Fit on the ORIGINAL (unscaled) internet_traffic values, not the MinMax-
 scaled column - ARIMA's linear structure is unaffected by scaling (a

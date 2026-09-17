@@ -1,21 +1,23 @@
 """
-Stage 4 - XGBoost model: systematic hyperparameter tuning via Grid Search
+XGBoost model: systematic hyperparameter tuning via Grid Search
 (explicitly suggested by the brief for cases not requiring manual
 experimentation - XGBoost trains fast enough on this data that a real
 grid is practical, unlike LSTM).
 
 Input representation: turns the forecasting problem into tabular
 regression using engineered features, not a raw sequence - a genuinely
-different paradigm from SARIMA and LSTM (see Stage 3 justification):
+different paradigm from SARIMA and LSTM (see the model-selection
+justification in the report):
 - lag_1, lag_2, lag_3: short-term persistence (SARIMA's tuning found
   AR terms dominate; these give XGBoost the same short-term signal
   directly as features)
 - lag_144: same time yesterday (the single strongest structure found in
-  Stage 2, ACF ~0.88 at 1-day lag)
-- lag_1008: same time last week (Stage 2 found this beats the 2-3 day
-  lags - a genuine weekly effect, not just decay)
+  the exploratory analysis, ACF ~0.88 at 1-day lag)
+- lag_1008: same time last week (the exploratory analysis found this
+  beats the 2-3 day lags - a genuine weekly effect, not just decay)
 - ten_min_of_day (0-143) and day_of_week (0-6): explicit calendar
-  features, given Stage 2's weekday/weekend behavioural split
+  features, given the exploratory analysis's weekday/weekend behavioural
+  split
 
 Uses ORIGINAL units (like SARIMA, unlike LSTM) - tree splits are scale-
 invariant, so scaling would change nothing about performance, and raw
