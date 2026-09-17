@@ -1,11 +1,11 @@
 """
-Stage 4 deliverable: the 9 required plots (3 models x 3 areas) of actual
-vs. predicted Internet traffic for the Dec 16-22 test week, laid out as
-one 3x3 grid (rows = models, columns = areas) so all 9 required
-comparisons are visible together, plus saved as individual PNGs too in
-case the report needs them separately.
+Forecasting experiments deliverable: the 9 required plots (3 models x 3
+areas) of actual vs. predicted Internet traffic for the Dec 16-22 test
+week, laid out as one 3x3 grid (rows = models, columns = areas) so all 9
+required comparisons are visible together, plus saved as individual PNGs
+too in case the report needs them separately.
 
-Run: python src/build_stage4_plots.py
+Run: python src/build_forecast_plots.py
 """
 from pathlib import Path
 
@@ -49,20 +49,20 @@ def main():
             ax_i.set_ylabel("Internet traffic")
             ax_i.legend(fontsize=8)
             fig_i.tight_layout()
-            fig_i.savefig(FIG_DIR / f"stage4_{model}_{sq}.png", dpi=150)
+            fig_i.savefig(FIG_DIR / f"forecast_{model}_{sq}.png", dpi=150)
             plt.close(fig_i)
 
     for ax in axes[-1, :]:
         ax.set_xlabel("Date")
         ax.tick_params(axis="x", rotation=30)
 
-    fig.suptitle("Stage 4: actual vs. one-step-ahead predicted Internet traffic, Dec 16-22\n"
+    fig.suptitle("Forecasting experiments: actual vs. one-step-ahead predicted Internet traffic, Dec 16-22\n"
                   "rows = model, columns = area", fontsize=13)
     fig.tight_layout()
-    out_path = FIG_DIR / "stage4_all_models_all_areas_grid.png"
+    out_path = FIG_DIR / "forecast_all_models_all_areas_grid.png"
     fig.savefig(out_path, dpi=150)
     print(f"Saved grid: {out_path}")
-    print(f"Saved 9 individual plots: stage4_{{model}}_{{square}}.png in {FIG_DIR}")
+    print(f"Saved 9 individual plots: forecast_{{model}}_{{square}}.png in {FIG_DIR}")
 
 
 if __name__ == "__main__":

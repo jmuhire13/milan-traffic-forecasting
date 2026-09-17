@@ -1,6 +1,7 @@
 """
-Stage 4, step 1 - shared data preparation pipeline for the three
-forecasting-target squares (5161, 5059, 5259).
+Shared data preparation pipeline for the forecasting experiments (Section
+4 of the assignment) - builds the train/test split and scalers for the
+three forecasting-target squares (5161, 5059, 5259).
 
 Produces, per square, one chronological train/test split (train = before
 2013-12-16; test = the week 2013-12-16 to 2013-12-22 inclusive) and a
@@ -10,7 +11,7 @@ scaler, so preprocessing is identical across all three - each model then
 does its own further shaping (windowing, lag features, etc.) on top of
 this common foundation.
 
-Run: python src/prepare_stage4_data.py
+Run: python src/prepare_forecasting_data.py
 """
 import json
 from pathlib import Path

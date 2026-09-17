@@ -1,9 +1,10 @@
 """
-Stage 2 review: independently re-check every number/claim produced during
-Stage 2 (distribution stats, top-3 ranking, time-series window, ACF
-values, STL decomposition, ADF test, anomaly list) before signing off.
+Exploratory analysis review: independently re-check every number/claim
+produced during the EDA (distribution stats, top-3 ranking, time-series
+window, ACF values, STL decomposition, ADF test, anomaly list) before
+signing off.
 
-Run: python src/validate_stage2.py
+Run: python src/validate_eda_findings.py
 """
 from pathlib import Path
 

@@ -1,8 +1,9 @@
 """
-Stage 4 deliverable: three tables (one per area) reporting MAE, MAPE,
-and RMSE for all three models - the assignment's required format.
+Forecasting experiments deliverable: three tables (one per area)
+reporting MAE, MAPE, and RMSE for all three models - the assignment's
+required format.
 
-Run: python src/build_stage4_tables.py
+Run: python src/build_forecast_tables.py
 """
 from pathlib import Path
 
@@ -32,7 +33,7 @@ def main():
             })
         table = pd.DataFrame(rows).set_index("Model")
         table = table.sort_values("RMSE")  # best model first
-        out_path = RESULTS_DIR / f"stage4_metrics_table_square_{sq}.csv"
+        out_path = RESULTS_DIR / f"forecast_metrics_table_square_{sq}.csv"
         table.to_csv(out_path)
         print(f"\n=== Square {sq} ===")
         print(table.to_string())

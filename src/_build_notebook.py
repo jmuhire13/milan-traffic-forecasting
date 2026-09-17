@@ -99,7 +99,7 @@ print(f"Combined dataset: {len(traffic):,} rows, {traffic['square_id'].nunique()
 traffic.head()
 """)
 
-md(r"""**Independently verified** (`src/validate_processed_dataset.py`, `src/validate_stage2.py`):
+md(r"""**Independently verified** (`src/validate_processed_dataset.py`, `src/validate_eda_findings.py`):
 no duplicate rows, all timestamps on the 10-minute grid, totals reproduced by an independent
 recomputation from the raw files, and — after correcting an initial UTC-vs-Milan-local-time bug
 (Milan runs 1 hour ahead of UTC in winter, with no clock change during this observation window) —
@@ -203,8 +203,10 @@ on the week of **December 16-22, 2013**, on this machine's 8-core CPU, 17GB RAM,
   (67.9s to fit a *minimal* configuration on just 1,000 points). Fit on original units. Tuned via a
   15-configuration grid search on a held-out validation slice, never the real test week.
 - **LSTM** — single LSTM layer + Dense(1), sliding windows of scaled values as input. Tuned over 4
-  configurations (lookback, units) — deliberately smaller than SARIMA's grid, since a single LSTM
-  fit costs roughly **30x** a single SARIMA fit on this CPU-only hardware. **A genuine test-set
+  configurations (lookback, units) — deliberately smaller than SARIMA's grid: an early single-run
+  comparison suggested ~30-40x SARIMA's cost (which motivated that decision), though the final,
+  fully-tuned models average out to ~7x SARIMA's cost on this CPU-only hardware (see the timing
+  table below). **A genuine test-set
   leakage bug was found during review and fixed**: the original final-training step was
   accidentally using the real test week as its early-stopping validation set. Corrected by
   retraining on the full training set for a fixed, legitimately-validated epoch count with no
@@ -220,7 +222,7 @@ explicit checks that forecasts are genuinely one-step-ahead rather than an accid
 forecast, plus model-specific checks) — 75 of 75 checks passed.
 """)
 
-code(r"""timing = pd.read_csv(TABLES / "stage4_timing_summary.csv", index_col=0)
+code(r"""timing = pd.read_csv(TABLES / "forecast_timing_summary.csv", index_col=0)
 timing
 """)
 
@@ -233,7 +235,7 @@ and an important factor in reading the comparison below.
 
 code(r"""for sq in [5161, 5059, 5259]:
     print(f"--- Square {sq} ---")
-    display(pd.read_csv(TABLES / f"stage4_metrics_table_square_{sq}.csv", index_col=0))
+    display(pd.read_csv(TABLES / f"forecast_metrics_table_square_{sq}.csv", index_col=0))
 """)
 
 md(r"""**SARIMA wins on 2 of 3 squares (5161, 5059); XGBoost wins the third (5259); LSTM is
@@ -248,7 +250,7 @@ smaller than SARIMA's given the measured cost difference above.
 ### All 9 required plots (3 models x 3 areas)
 """)
 
-code(r"""display(Image(filename=str(FIGS / "stage4_all_models_all_areas_grid.png")))""")
+code(r"""display(Image(filename=str(FIGS / "forecast_all_models_all_areas_grid.png")))""")
 
 md(r"""### Failure analysis: square 5259's overnight anomaly, Dec 21-22
 
