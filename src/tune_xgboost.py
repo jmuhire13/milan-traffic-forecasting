@@ -36,19 +36,21 @@ week.
 Run: python src/tune_xgboost.py
 """
 import itertools
+import sys
 import time
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 from xgboost import XGBRegressor
+
+sys.path.insert(0, str(Path(__file__).parent))
+from common import LAGS, build_feature_table, mae, mape, rmse
 
 DATA_DIR = Path("data/processed/stage4")
 RESULTS_DIR = Path("results/tables")
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
 SQUARES = [5161, 5059, 5259]
-LAGS = [1, 2, 3, 144, 1008]
 VAL_STEPS = 1008
 
 PARAM_GRID = {
@@ -56,28 +58,6 @@ PARAM_GRID = {
     "max_depth": [3, 5, 7],
     "learning_rate": [0.05, 0.1],
 }
-
-
-def mae(y, yhat):
-    return float(np.mean(np.abs(y - yhat)))
-
-
-def mape(y, yhat):
-    return float(np.mean(np.abs((y - yhat) / y)) * 100)
-
-
-def rmse(y, yhat):
-    return float(np.sqrt(np.mean((y - yhat) ** 2)))
-
-
-def build_feature_table(full_series: pd.Series) -> pd.DataFrame:
-    df = pd.DataFrame({"y": full_series.values}, index=full_series.index)
-    for lag in LAGS:
-        df[f"lag_{lag}"] = df["y"].shift(lag)
-    df["ten_min_of_day"] = (df.index.hour * 6 + df.index.minute // 10)
-    df["day_of_week"] = df.index.dayofweek
-    df = df.dropna()  # drops the first max(LAGS) rows where lags aren't available yet
-    return df
 
 
 def load_full_series(square_id: int) -> tuple[pd.Series, pd.Timestamp, pd.Timestamp]:

@@ -19,6 +19,7 @@ evaluation against the untouched Dec 16-22 test week.
 Run: python src/tune_lstm.py
 """
 import json
+import sys
 import time
 import warnings
 from pathlib import Path
@@ -27,6 +28,10 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
+
+sys.path.insert(0, str(Path(__file__).parent))
+from common import build_lstm_model as build_model
+from common import mae, make_windows, mape, rmse
 
 warnings.filterwarnings("ignore")
 tf.get_logger().setLevel("ERROR")
@@ -42,39 +47,6 @@ VAL_STEPS = 1008
 EPOCHS_CAP = 20
 PATIENCE = 3
 BATCH_SIZE = 64
-
-
-def mae(y, yhat):
-    return float(np.mean(np.abs(y - yhat)))
-
-
-def mape(y, yhat):
-    return float(np.mean(np.abs((y - yhat) / y)) * 100)
-
-
-def rmse(y, yhat):
-    return float(np.sqrt(np.mean((y - yhat) ** 2)))
-
-
-def make_windows(series: np.ndarray, lookback: int):
-    n = len(series) - lookback
-    X = np.zeros((n, lookback, 1), dtype="float32")
-    y = np.zeros(n, dtype="float32")
-    for i in range(n):
-        X[i, :, 0] = series[i:i + lookback]
-        y[i] = series[i + lookback]
-    return X, y
-
-
-def build_model(lookback: int, units: int):
-    tf.random.set_seed(42)
-    model = keras.Sequential([
-        keras.layers.Input(shape=(lookback, 1)),
-        keras.layers.LSTM(units),
-        keras.layers.Dense(1),
-    ])
-    model.compile(optimizer="adam", loss="mse")
-    return model
 
 
 def fit_and_eval(fit_scaled, eval_scaled, lookback, units):

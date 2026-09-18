@@ -30,7 +30,7 @@ Training runs entirely on CPU. There's no CUDA/GPU dependency anywhere in this c
 
 ## Project Structure
 
-`src/` contains the full pipeline as a series of standalone scripts, meant to be run in order rather than as an installable package. `results/` holds every figure and metrics table the pipeline produces, organized into `figures/` and `tables/`.
+`src/` contains the full pipeline as a series of standalone scripts, meant to be run in order rather than as an installable package. `common.py` is the one exception, it's not a pipeline step itself, just the shared module the model scripts import their metric functions, Fourier-term logic, and windowing/feature-engineering helpers from, so that logic exists in one place instead of being repeated across every script that needs it. `results/` holds every figure and metrics table the pipeline produces, organized into `figures/` and `tables/`.
 
 ## Running the Pipeline
 
@@ -84,11 +84,12 @@ python src/fix_lstm_final.py
 python src/lstm_extended_epochs_check.py
 ```
 
-Finally, these two assemble the comparison figures and per-area metrics tables from everything produced above:
+Finally, these three assemble the comparison figures, per-area metrics tables, and timing statistics from everything produced above. The timing script retrains each model's already-tuned configuration fresh, back-to-back, in one clean run, so the comparison is measured under the same conditions rather than pieced together from earlier tuning runs:
 
 ```
 python src/build_forecast_plots.py
 python src/build_forecast_tables.py
+python src/build_forecast_timing.py
 ```
 
 A few scripts sit outside this required sequence and don't need to run for the results in `results/` to be reproduced, they're supporting checks, not steps that produce or change anything. `memory_benchmark.py`, `model_sarima.py`, and `model_lstm.py` were early, standalone sanity checks written before the full tuning scripts existed; `deep_audit_sarima.py`, `deep_audit_lstm.py`, and `deep_audit_xgboost.py` are read-only checks that independently re-verify each model's already-saved predictions and metrics. All six can be run at any point after the step they depend on (`build_dataset.py` for the first three, `model_lstm.py` additionally needs `prepare_forecasting_data.py`; the three audit scripts need their corresponding model's tuning and for LSTM, the fix and follow-up is already run):

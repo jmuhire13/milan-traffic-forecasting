@@ -23,48 +23,26 @@ observed data through t-1, matching the assignment's formal definition
 Run: python src/model_sarima.py
 """
 import json
+import sys
 import time
 import warnings
 from pathlib import Path
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+sys.path.insert(0, str(Path(__file__).parent))
+from common import K_DAILY, K_WEEKLY, fourier_features, mae, mape, rmse
 
 warnings.filterwarnings("ignore")
 
 DATA_DIR = Path("data/processed/stage4")
 RESULTS_DIR = Path("results/tables")
+FIG_DIR = Path("results/figures")
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-
-DAILY_PERIOD = 144
-WEEKLY_PERIOD = 1008
-K_DAILY = 4   # number of daily harmonics
-K_WEEKLY = 2  # number of weekly harmonics
-
-
-def fourier_features(t: np.ndarray) -> np.ndarray:
-    """t = absolute step index (continuous across train/test boundary)."""
-    cols = []
-    for k in range(1, K_DAILY + 1):
-        cols.append(np.sin(2 * np.pi * k * t / DAILY_PERIOD))
-        cols.append(np.cos(2 * np.pi * k * t / DAILY_PERIOD))
-    for k in range(1, K_WEEKLY + 1):
-        cols.append(np.sin(2 * np.pi * k * t / WEEKLY_PERIOD))
-        cols.append(np.cos(2 * np.pi * k * t / WEEKLY_PERIOD))
-    return np.column_stack(cols)
-
-
-def mae(y, yhat):
-    return float(np.mean(np.abs(y - yhat)))
-
-
-def mape(y, yhat):
-    return float(np.mean(np.abs((y - yhat) / y)) * 100)
-
-
-def rmse(y, yhat):
-    return float(np.sqrt(np.mean((y - yhat) ** 2)))
+FIG_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def run_one_square(square_id: int, order=(2, 0, 2)):
@@ -128,4 +106,15 @@ if __name__ == "__main__":
     out_path = RESULTS_DIR / "sarima_5161_sanity_check.csv"
     preds_df.to_csv(out_path, index=False)
     print(f"\nSaved: {out_path}")
+
+    fig, ax = plt.subplots(figsize=(11, 4))
+    ax.plot(preds_df["timestamp"], preds_df["actual"], label="actual", linewidth=0.9)
+    ax.plot(preds_df["timestamp"], preds_df["predicted"], label="SARIMA predicted", linewidth=0.9, alpha=0.8)
+    ax.legend()
+    ax.set_title("Square 5161 - SARIMA sanity check (untuned), Dec 16-22")
+    fig.tight_layout()
+    fig_path = FIG_DIR / "sarima_5161_sanity_check.png"
+    fig.savefig(fig_path, dpi=150)
+    print(f"Saved: {fig_path}")
+
     print(json.dumps(metrics, indent=2))

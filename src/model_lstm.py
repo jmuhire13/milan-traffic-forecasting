@@ -23,6 +23,7 @@ only scoring the windows whose target falls in the test week.
 
 Run: python src/model_lstm.py
 """
+import sys
 import time
 import warnings
 from pathlib import Path
@@ -31,6 +32,10 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
+
+sys.path.insert(0, str(Path(__file__).parent))
+from common import build_lstm_model as build_model
+from common import mae, make_windows, mape, rmse
 
 warnings.filterwarnings("ignore")
 tf.random.set_seed(42)
@@ -41,39 +46,6 @@ RESULTS_DIR = Path("results/tables")
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
 VAL_STEPS = 1008  # same held-out validation slice used for SARIMA, for consistency
-
-
-def mae(y, yhat):
-    return float(np.mean(np.abs(y - yhat)))
-
-
-def mape(y, yhat):
-    return float(np.mean(np.abs((y - yhat) / y)) * 100)
-
-
-def rmse(y, yhat):
-    return float(np.sqrt(np.mean((y - yhat) ** 2)))
-
-
-def make_windows(series: np.ndarray, lookback: int):
-    """series -> (X, y) where X[i] = series[i:i+lookback], y[i] = series[i+lookback]."""
-    n = len(series) - lookback
-    X = np.zeros((n, lookback, 1), dtype="float32")
-    y = np.zeros(n, dtype="float32")
-    for i in range(n):
-        X[i, :, 0] = series[i:i + lookback]
-        y[i] = series[i + lookback]
-    return X, y
-
-
-def build_model(lookback: int, units: int):
-    model = keras.Sequential([
-        keras.layers.Input(shape=(lookback, 1)),
-        keras.layers.LSTM(units),
-        keras.layers.Dense(1),
-    ])
-    model.compile(optimizer="adam", loss="mse")
-    return model
 
 
 def run_one_square(square_id: int, lookback=144, units=64, epochs=50, batch_size=64, min_max=None):

@@ -16,6 +16,7 @@ evidence too - it means 20 epochs was already enough.
 Run: python src/lstm_extended_epochs_check.py
 """
 import json
+import sys
 import time
 import warnings
 from pathlib import Path
@@ -24,6 +25,10 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
+
+sys.path.insert(0, str(Path(__file__).parent))
+from common import build_lstm_model as build_model
+from common import mae, make_windows, mape, rmse
 
 warnings.filterwarnings("ignore")
 tf.get_logger().setLevel("ERROR")
@@ -40,39 +45,6 @@ VAL_STEPS = 1008
 BATCH_SIZE = 64
 EXTENDED_EPOCHS_CAP = 50
 EXTENDED_PATIENCE = 6
-
-
-def mae(y, yhat):
-    return float(np.mean(np.abs(y - yhat)))
-
-
-def mape(y, yhat):
-    return float(np.mean(np.abs((y - yhat) / y)) * 100)
-
-
-def rmse(y, yhat):
-    return float(np.sqrt(np.mean((y - yhat) ** 2)))
-
-
-def make_windows(series, lookback):
-    n = len(series) - lookback
-    X = np.zeros((n, lookback, 1), dtype="float32")
-    y = np.zeros(n, dtype="float32")
-    for i in range(n):
-        X[i, :, 0] = series[i:i + lookback]
-        y[i] = series[i + lookback]
-    return X, y
-
-
-def build_model(lookback, units):
-    tf.random.set_seed(42)
-    model = keras.Sequential([
-        keras.layers.Input(shape=(lookback, 1)),
-        keras.layers.LSTM(units),
-        keras.layers.Dense(1),
-    ])
-    model.compile(optimizer="adam", loss="mse")
-    return model
 
 
 def main():

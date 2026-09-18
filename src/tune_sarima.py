@@ -20,6 +20,7 @@ the untouched test week.
 Run: python src/tune_sarima.py
 """
 import json
+import sys
 import time
 import warnings
 from pathlib import Path
@@ -28,41 +29,19 @@ import numpy as np
 import pandas as pd
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 
+sys.path.insert(0, str(Path(__file__).parent))
+from common import fourier_features, mae, mape, rmse
+
 warnings.filterwarnings("ignore")
 
 DATA_DIR = Path("data/processed/stage4")
 RESULTS_DIR = Path("results/tables")
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
-DAILY_PERIOD, WEEKLY_PERIOD = 144, 1008
-K_DAILY, K_WEEKLY = 4, 2
 SQUARES = [5161, 5059, 5259]
 P_GRID = [0, 1, 2, 3]
 Q_GRID = [0, 1, 2, 3]
 VAL_STEPS = 1008  # last 7 days of the training period, held out for tuning only
-
-
-def fourier_features(t):
-    cols = []
-    for k in range(1, K_DAILY + 1):
-        cols.append(np.sin(2 * np.pi * k * t / DAILY_PERIOD))
-        cols.append(np.cos(2 * np.pi * k * t / DAILY_PERIOD))
-    for k in range(1, K_WEEKLY + 1):
-        cols.append(np.sin(2 * np.pi * k * t / WEEKLY_PERIOD))
-        cols.append(np.cos(2 * np.pi * k * t / WEEKLY_PERIOD))
-    return np.column_stack(cols)
-
-
-def mae(y, yhat):
-    return float(np.mean(np.abs(y - yhat)))
-
-
-def mape(y, yhat):
-    return float(np.mean(np.abs((y - yhat) / y)) * 100)
-
-
-def rmse(y, yhat):
-    return float(np.sqrt(np.mean((y - yhat) ** 2)))
 
 
 def one_step_ahead(y_fit, x_fit, y_eval, x_eval, order):

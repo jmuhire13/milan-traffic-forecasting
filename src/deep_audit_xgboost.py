@@ -7,10 +7,14 @@ importances are sane (sum to ~1, no NaNs).
 
 Run: python src/deep_audit_xgboost.py
 """
+import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).parent))
+from common import mae, mape, rmse
 
 RESULTS_DIR = Path("results/tables")
 DATA_DIR = Path("data/processed/stage4")
@@ -23,18 +27,6 @@ def check(name, condition, detail=""):
     status = "PASS" if condition else "FAIL"
     checks.append((name, status, detail))
     print(f"[{status}] {name}  {detail}")
-
-
-def mae(y, yhat):
-    return float(np.mean(np.abs(y - yhat)))
-
-
-def mape(y, yhat):
-    return float(np.mean(np.abs((y - yhat) / y)) * 100)
-
-
-def rmse(y, yhat):
-    return float(np.sqrt(np.mean((y - yhat) ** 2)))
 
 
 def main():
