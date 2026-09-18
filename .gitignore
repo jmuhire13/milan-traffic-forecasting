@@ -3,3 +3,6 @@ LEARNING_NOTES.md
 WORK_LOG.md
 docs/
 notebooks/
+src/_build_notebook.py
+__pycache__/
+*.pyc
