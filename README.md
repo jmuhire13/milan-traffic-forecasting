@@ -63,7 +63,7 @@ python src/eda_spatial_heatmap.py
 python src/validate_eda_findings.py
 ```
 
-Before touching any models, `prepare_forecasting_data.py` builds the train/validation/test split and per-square scalers that every model below reads from, so it has to run first:
+Before touching any models, `prepare_forecasting_data.py` builds the train/test split and per-square scalers that every model below reads from, so it has to run first. Each tuning script additionally carves its own held-out validation slice out of the tail of the training data at run time, rather than reading a separate validation file, since the training data is what has to stay untouched at test time either way:
 
 ```
 python src/prepare_forecasting_data.py
